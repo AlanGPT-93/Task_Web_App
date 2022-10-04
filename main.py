@@ -3,7 +3,8 @@ from urllib import response
 from flask import Flask, make_response, redirect, request, render_template
 
 
-app = Flask(__name__)
+app = Flask(__name__,
+static_folder =  "static")
 
 to_dos = ["do1", "do2", "do3"]
 
