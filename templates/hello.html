@@ -1,11 +1,23 @@
-{% if user_ip %}
-    <p>Hello World, I'm using a flask template {{user_ip}}</p> 
+{% extends "base.html" %}
+{% import "macros.html" as macro %}
 
-    {% for to_do in to_dos %}
-        <li>{{to_do}}</li>
-    {% endfor %}
 
-{% else %}
-    <a href = "{{ url_for('index') }}"> Go to index </a>
-{% endif %}
+{% block title %}
+    {{ super() }}
+    Hello
+{% endblock %}
 
+{% block content %}
+    {% if user_ip %}
+        {{ super() }}
+        <p>Hello World, I'm using a flask template {{ user_ip }}</p> 
+
+        {% for to_do in to_dos %}
+            {{macro.render_text(to_do)}}
+        {% endfor %}
+
+    {% else %}
+        <a href = "{{ url_for('index') }}"> Go to index </a>
+    {% endif %}
+
+{% endblock %}
