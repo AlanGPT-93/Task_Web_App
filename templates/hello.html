@@ -1,0 +1,11 @@
+{% if user_ip %}
+    <p>Hello World, I'm using a flask template {{user_ip}}</p> 
+
+    {% for to_do in to_dos %}
+        <li>{{to_do}}</li>
+    {% endfor %}
+
+{% else %}
+    <a href = "{{ url_for('index') }}"> Go to index </a>
+{% endif %}
+
