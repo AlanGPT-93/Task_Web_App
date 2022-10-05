@@ -1,10 +1,14 @@
+from ensurepip import bootstrap
 from glob import escape
 from urllib import response
 from flask import Flask, make_response, redirect, request, render_template
-
+from flask_bootstrap import Bootstrap
 
 app = Flask(__name__,
 static_folder =  "static")
+
+bootstrap = Bootstrap(app)
+
 
 to_dos = ["do1", "do2", "do3"]
 
