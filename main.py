@@ -1,11 +1,12 @@
 from ensurepip import bootstrap
-from glob import escape
 from urllib import response
-from flask import Flask, make_response, redirect, request, render_template
+from flask import Flask, make_response, redirect, request, render_template, session
 from flask_bootstrap import Bootstrap
 
 app = Flask(__name__,
 static_folder =  "static")
+app.config.update(ENV = "development")
+app.config["SECRET_KEY"] = "TOP SECRET"
 
 bootstrap = Bootstrap(app)
 
@@ -17,13 +18,14 @@ def index():
     #js = "<style> * {background: #00ff00} </style>"  #
     user_ip = request.remote_addr
     response = make_response(redirect("/hello"))
-    response.set_cookie("user_ip", user_ip)
+    #response.set_cookie("user_ip", user_ip)
+    session["user_ip"] = user_ip
     return response
 
 @app.route("/hello")
 def hello():
-    user_ip = request.cookies.get('user_ip')
-    #user_ip = escape(user_ip)
+    #user_ip = request.cookies.get('user_ip')
+    user_ip = session.get("user_ip")
     context = {
         "to_dos": to_dos,
         "user_ip": user_ip
