@@ -20,15 +20,16 @@
     <span class="icon-bar"></span>
     </button>
     <a class="navbar-brand" href="{{ url_for('index') }}">
-    <img src="{{ url_for('static', filename='images/metaverse.png') }}"
-                         style="max-width: 48px"
-                         alt="Platzi logo">
+    <img src="{{ url_for('static', filename='images/metaverse.png') }}" alt="Meeting logo">
     </a>
     </div>
     <div class="navbar-collapse collapse">
     <ul class="nav navbar-nav">
-    <li><a href="{{ url_for('index') }}">Inicio</a></li>
-    <li><a href="https://platzi.com" target="_blank">Platzi</a></li>
+        {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('index') }}">Inicio</a></li>
+        <li><a href="https://github.com/AlanGPT-93" target="_blank">Dev Site</a></li>
     </ul>
     </div>
     </div>
