@@ -1,46 +1,54 @@
-from flask import Flask, make_response, redirect, request, render_template, session
-from flask_bootstrap import Bootstrap
-from flask_wtf import FlaskForm
-from wtforms.fields import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired
+from flask import request, make_response, redirect, render_template, session, url_for, flash
+import unittest
+from app import create_app
+from app.forms import LoginForm
+from app.firestore_service import get_users, get_todos
 
+app = create_app()
 
-app = Flask(__name__, static_folder =  "static")
-app.config.update(ENV = "development")
-app.config["SECRET_KEY"] = "TOP SECRET"
+#to_dos = ["do1", "do2", "do3"]
 
-class LoginForm(FlaskForm):
-    username = StringField("User Name", validators = [DataRequired()]) 
-    password = PasswordField("Password", validators = [DataRequired()])
-    submit = SubmitField("Enviar")
+@app.cli.command()
+def test():
+    tests = unittest.TestLoader().discover('tests')
+    unittest.TextTestRunner().run(tests)
 
-bootstrap = Bootstrap(app)
+@app.errorhandler(404)
+def not_found(error):
+    return render_template('404.html', error=error)
 
+@app.errorhandler(500)
+def server_error(error):
+    return render_template('500.html', error=error)
 
-to_dos = ["do1", "do2", "do3"]
-
-@app.route("/")
+@app.route('/')
 def index():
-    #js = "<style> * {background: #00ff00} </style>"  #
     user_ip = request.remote_addr
-    response = make_response(redirect("/hello"))
-    #response.set_cookie("user_ip", user_ip)
-    session["user_ip"] = user_ip
+    response = make_response(redirect('/hello'))
+    session['user_ip'] = user_ip
+   
     return response
 
-@app.route("/hello")
+
+@app.route('/hello', methods=['GET'])
 def hello():
-    #user_ip = request.cookies.get('user_ip')
-    user_ip = session.get("user_ip")
-    login_form = LoginForm()
+    user_ip = session.get('user_ip')
+    username = session.get('username')
 
     context = {
-        "to_dos": to_dos,
-        "user_ip": user_ip,
-        "login_form": login_form
+        'user_ip': user_ip,
+        'todos': get_todos(user_id = username),
+        'username': username
     }
 
-    return render_template("hello.html", **context)
+    users = get_users()
+
+    for user in users:
+        print(user.id)
+        print(user.to_dict()['password'])
+
+    return render_template('hello.html', **context)
+
 
 if __name__ == "__main__":
     app.run(port = 8080, debug = True)

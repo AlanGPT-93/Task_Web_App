@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% import "macros.html" as macro %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+
+{% block title %}
+    {{ super() }}
+    Hello
+{% endblock %}
+
+{% block content %}
+    {% if username %}
+        <!-- {{ super() }} -->
+        <p>Hello World, I'm using a flask template {{ username | capitalize }}</p>
+    {% endif %}
+
+    {% if user_ip %}
+        <h3>Tu IP es {{ user_ip }}</h3>
+    {% else %}
+        <a href="{{ url_for('index') }}">Ir a inicio</a>
+    {% endif %}
+
+    <ul>
+        {% for todo in todos %}
+            {{ macro.render_todo(todo) }}
+        {% endfor %}
+    </ul>
+
+
+{% endblock %}
