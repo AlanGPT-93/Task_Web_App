@@ -31,3 +31,14 @@ def add_todo(user_id, description):
 def delete_todo(user_id, todo_id):
     todo_ref = db.document('users/{}/to_dos/{}'.format(user_id, todo_id))
     todo_ref.delete()
+
+def _get_todo_ref(user_id, todo_id):
+    return db.document('users/{}/to_dos/{}'.format(user_id, todo_id))
+
+
+def update_todo_status(user_id, todo_id, done):
+    todo_done = not bool(done)
+    todo_ref = _get_todo_ref(user_id, todo_id)
+    todo_ref.update({'done': todo_done})
+
+

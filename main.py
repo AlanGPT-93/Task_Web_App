@@ -1,8 +1,8 @@
 from flask import request, make_response, redirect, render_template, session, url_for, flash
 import unittest
 from app import create_app
-from app.forms import LoginForm, TodoForm, DeleteTodoForm
-from app.firestore_service import get_users, get_todos, add_todo, delete_todo
+from app.forms import LoginForm, TodoForm, DeleteTodoForm, UpdateTodoForm
+from app.firestore_service import get_users, get_todos, add_todo, delete_todo, update_todo_status
 from flask_login import login_required, current_user
 
 app = create_app()
@@ -38,13 +38,15 @@ def hello():
     username = current_user.id #session.get('username')
     todo_form = TodoForm()
     delete_form = DeleteTodoForm()
+    update_form = UpdateTodoForm()
 
     context = {
         'user_ip': user_ip,
         'todos': get_todos(user_id = username),
         'username': username,
         'todo_form': todo_form,
-        'delete_form': delete_form
+        'delete_form': delete_form,
+        'update_form': update_form
     }
 
     # users = get_users()
@@ -67,6 +69,15 @@ def delete(todo_id):
     delete_todo(user_id=user_id, todo_id = todo_id)
 
     return redirect(url_for('hello'))
+
+@app.route('/todos/update/<todo_id>/<int:done>', methods=['POST'])
+def update(todo_id, done):
+    user_id = current_user.id
+
+    update_todo_status(user_id=user_id, todo_id=todo_id, done=done)
+
+    return redirect(url_for('hello'))
+
 
 if __name__ == "__main__":
     app.run(port = 8080, debug = True)
